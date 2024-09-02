@@ -1,0 +1,6 @@
+@Upload_Files_Mega_HostAddress = http://localhost:5159
+
+GET {{Upload_Files_Mega_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
