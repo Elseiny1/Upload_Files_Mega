@@ -2,7 +2,6 @@
 {
     public interface IMegaService
     {
-        public Task<string> AuthenticateAsync(string email, string password);
         public Task<Uri> UploadFileAsync(IFormFile file);
     }
 }

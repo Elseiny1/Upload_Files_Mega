@@ -14,10 +14,17 @@ namespace Upload_Files_Mega.Services
         }
         public async Task<Uri> UploadFileAsync(IFormFile file)
         {
-            // Create a MegaApiClient instance and log in
+            
             MegaApiClient client = new MegaApiClient();
-            await client.LoginAsync("ahmedosama211@gmail.com", "ahe041445260");
-
+            try
+            {
+                // Create a MegaApiClient instance and log in
+                await client.LoginAsync("ahmedosama211@gmail.com", "ahe041445260");
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
             // Get the nodes and create a folder
             IEnumerable<INode> nodes = client.GetNodes();
             INode root = nodes.Single(x => x.Type == NodeType.Root);
@@ -25,7 +32,10 @@ namespace Upload_Files_Mega.Services
 
             // Save the uploaded file to a temporary location
             string tempFilePath = Path.GetTempFileName(); // Generates a temp file path
-            using (var stream = new FileStream(tempFilePath, FileMode.Create))
+            string FileName = file.FileName;
+            string fileExtenstion = Path.GetExtension(FileName);
+            string FilePath = Path.ChangeExtension(tempFilePath, fileExtenstion);
+            using (var stream = new FileStream(FilePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream); // Copy the IFormFile content to the temp file
             }
@@ -33,7 +43,7 @@ namespace Upload_Files_Mega.Services
             try
             {
                 // Upload the file to Mega using the temporary file path
-                INode myFile = client.UploadFile(tempFilePath, myFolder);
+                INode myFile = client.UploadFile(FilePath, myFolder);
                 Uri downloadLink = await client.GetDownloadLinkAsync(myFile);
 
                 await client.LogoutAsync();
