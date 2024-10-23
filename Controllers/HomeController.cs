@@ -1,7 +1,8 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Upload_Files_Mega.Services;
+using Upload_Files_Mega.Services.IRepo;
+using Upload_Files_Mega.ViewModel;
 
 namespace Upload_Files_Mega.Controllers
 {
@@ -17,9 +18,10 @@ namespace Upload_Files_Mega.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload(ImagesUpload file)
         {
-            var upload=await _megaService.UploadFileAsync(file);
+
+            var upload=await _megaService.UploadFileAsync(file.MyFile);
 
             return Ok(upload);
         }

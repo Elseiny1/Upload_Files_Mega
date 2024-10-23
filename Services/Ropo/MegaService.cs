@@ -1,10 +1,11 @@
 ﻿using CG.Web.MegaApiClient;
 using System.Net.Http.Headers;
 using System.Text;
+using Upload_Files_Mega.Services.IRepo;
 
-namespace Upload_Files_Mega.Services
+namespace Upload_Files_Mega.Services.Ropo
 {
-    public class MegaService:IMegaService
+    public class MegaService : IMegaService
     {
         private readonly HttpClient _httpClient;
 
@@ -14,7 +15,7 @@ namespace Upload_Files_Mega.Services
         }
         public async Task<Uri> UploadFileAsync(IFormFile file)
         {
-            
+
             MegaApiClient client = new MegaApiClient();
             try
             {

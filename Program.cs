@@ -1,4 +1,5 @@
-using Upload_Files_Mega.Services;
+using Upload_Files_Mega.Services.IRepo;
+using Upload_Files_Mega.Services.Ropo;
 
 var builder = WebApplication.CreateBuilder(args);
 
