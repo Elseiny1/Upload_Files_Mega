@@ -23,6 +23,9 @@ namespace Upload_Files_Mega.Controllers
 
             var upload=await _megaService.UploadFileAsync(file.MyFile);
 
+            if (upload == null)
+                return BadRequest("Something went wrong");
+
             return Ok(upload);
         }
 
