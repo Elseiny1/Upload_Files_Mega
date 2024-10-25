@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TemporaryFiles\" />
+    <Folder Include="Files\" />
   </ItemGroup>
 
 </Project>

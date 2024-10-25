@@ -1,5 +1,7 @@
 ﻿using CG.Web.MegaApiClient;
+using System.IO.Pipelines;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using Upload_Files_Mega.Services.IRepo;
 
@@ -16,6 +18,7 @@ namespace Upload_Files_Mega.Services.Ropo
         }
 
         //here is all private methodes to serve on action methods
+        #region Private Methodes
         #region Upload Files
 
         private async Task<INode> GetMegaNodesAsync(MegaApiClient client)
@@ -44,7 +47,45 @@ namespace Upload_Files_Mega.Services.Ropo
         }
         #endregion
 
+        private async Task<MegaApiClient> MegaLogInAsync(string email, string password, MegaApiClient client)
+        {
+            try
+            {
+                // Create a MegaApiClient instance and log in
+                await client.LoginAsync(email, password);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return client;
+        }
 
+        #endregion
+
+        #region Get Files
+        private async Task<string> MegaServerDownloadAsync(Uri uri, MegaApiClient client)
+        {
+            INode node = client.GetNodeFromLink(uri);
+
+            if(node == null) 
+                return null;
+
+            var downloadPath = Path.GetFullPath("Files");
+            var fullPath = Path.Combine(downloadPath, node.Name);
+
+            if(File.Exists(fullPath))
+                return fullPath;
+
+            Stream stream = new FileStream(fullPath, FileMode.Create);
+            stream = client.Download(node);
+
+            return fullPath;
+        }
+
+        #endregion
+
+        #region Action Methods
 
         public async Task<Uri> UploadFileAsync(IFormFile file)
         {
@@ -52,15 +93,10 @@ namespace Upload_Files_Mega.Services.Ropo
                 return null;
 
             MegaApiClient client = new MegaApiClient();
-            try
-            {
-                // Create a MegaApiClient instance and log in
-                await client.LoginAsync("ahmedosama211@gmail.com", "ahe041445260");
-            }
-            catch (Exception ex)
-            {
+            client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
+
+            if (client == null)
                 return null;
-            }
 
             var myFolder = await GetMegaNodesAsync(client);
 
@@ -85,5 +121,25 @@ namespace Upload_Files_Mega.Services.Ropo
             }
         }
 
+        public async Task<string> MegaDowenloadFileAsync(Uri uri)
+        {
+            if(uri == null)
+                return "Invalid uri";
+
+            MegaApiClient client = new MegaApiClient();
+            client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
+
+            if (client == null)
+                return "invalid username or password";
+
+            var filePath = await MegaServerDownloadAsync(uri, client);
+
+            if (filePath == null)
+                return "File not Found";
+
+            return filePath ;
+        }
+
+        #endregion
     }
 }
