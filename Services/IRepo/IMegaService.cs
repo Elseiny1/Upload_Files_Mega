@@ -17,5 +17,13 @@ namespace Upload_Files_Mega.Services.IRepo
         /// <param name="uri"></param>
         /// <returns>Full path on the server</returns>
         public Task<string> MegaDowenloadFileAsync(Uri uri);
+
+        /// <summary>
+        /// Getting the file name that uploaded on mega already
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="folderType"></param>
+        /// <returns>File Name</returns>
+        public Task<string> MegaGetFileAsync(string fileName, string folderType);
     }
 }

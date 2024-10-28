@@ -1,6 +1,7 @@
 ﻿using CG.Web.MegaApiClient;
 using System.IO.Pipelines;
 using System.Net.Http.Headers;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 using Upload_Files_Mega.Services.IRepo;
@@ -68,13 +69,13 @@ namespace Upload_Files_Mega.Services.Ropo
         {
             INode node = client.GetNodeFromLink(uri);
 
-            if(node == null) 
+            if (node == null)
                 return null;
 
             var downloadPath = Path.GetFullPath("Files");
             var fullPath = Path.Combine(downloadPath, node.Name);
 
-            if(File.Exists(fullPath))
+            if (File.Exists(fullPath))
                 return fullPath;
 
             Stream stream = new FileStream(fullPath, FileMode.Create);
@@ -91,6 +92,8 @@ namespace Upload_Files_Mega.Services.Ropo
         {
             if (file == null)
                 return null;
+
+            var fileSize = file.Length;
 
             MegaApiClient client = new MegaApiClient();
             client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
@@ -130,7 +133,7 @@ namespace Upload_Files_Mega.Services.Ropo
             client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
 
             if (client == null)
-                return "invalid username or password";
+                return "Invalid Mega account";
 
             var filePath = await MegaServerDownloadAsync(uri, client);
 
@@ -138,6 +141,33 @@ namespace Upload_Files_Mega.Services.Ropo
                 return "File not Found";
 
             return filePath ;
+        }
+
+        public async Task<string> MegaGetFileAsync(string fileName, string folderType)
+        {
+            if (fileName == null)
+                return "uri neede";
+
+            MegaApiClient client = new MegaApiClient();
+            client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
+
+            if (client == null)
+                return "Invalid Mega Account";
+            try
+            {
+                var nodes = await client.GetNodesAsync();
+                var allFiles = nodes.Where(f => f.Type == NodeType.File).ToList();
+                var goalFile = nodes.Where(n => n.Name == fileName).FirstOrDefault();
+
+                if (goalFile == null)
+                    return "File not found :(";
+
+                return goalFile.Name;
+            }
+            catch (Exception ex)
+            {
+                return "Exception Invalid Operation";
+            }
         }
 
         #endregion

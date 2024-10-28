@@ -41,5 +41,16 @@ namespace Upload_Files_Mega.Controllers
 
         }
 
+        [HttpGet("Get File Name")]
+        public async Task<IActionResult> GetFileNameAsync(string fileName, string folderType)
+        {
+            if (fileName == null || folderType == null)
+                return BadRequest();
+
+            var goalFileName = await _megaService.MegaGetFileAsync(fileName, folderType);
+            return Ok(goalFileName);
+        }
+
+
     }
 }
