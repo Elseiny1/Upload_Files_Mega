@@ -143,16 +143,13 @@ namespace Upload_Files_Mega.Services.Ropo
             return filePath ;
         }
 
-        public async Task<string> MegaGetFileAsync(string fileName, string folderType)
+        public async Task<Uri> MegaGetFileAsync(string fileName, string folderType)
         {
-            if (fileName == null)
-                return "uri neede";
-
             MegaApiClient client = new MegaApiClient();
             client = await MegaLogInAsync("ahmedosama211@gmail.com", "ahe041445260", client);
 
             if (client == null)
-                return "Invalid Mega Account";
+                return null;
             try
             {
                 var nodes = await client.GetNodesAsync();
@@ -160,13 +157,15 @@ namespace Upload_Files_Mega.Services.Ropo
                 var goalFile = nodes.Where(n => n.Name == fileName).FirstOrDefault();
 
                 if (goalFile == null)
-                    return "File not found :(";
+                    return null;
 
-                return goalFile.Name;
+                Uri uri = client.GetDownloadLink(goalFile);
+
+                return uri;
             }
             catch (Exception ex)
             {
-                return "Exception Invalid Operation";
+                return null;
             }
         }
 

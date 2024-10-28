@@ -24,6 +24,6 @@ namespace Upload_Files_Mega.Services.IRepo
         /// <param name="fileName"></param>
         /// <param name="folderType"></param>
         /// <returns>File Name</returns>
-        public Task<string> MegaGetFileAsync(string fileName, string folderType);
+        public Task<Uri> MegaGetFileAsync(string fileName, string folderType);
     }
 }

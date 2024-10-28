@@ -48,6 +48,8 @@ namespace Upload_Files_Mega.Controllers
                 return BadRequest();
 
             var goalFileName = await _megaService.MegaGetFileAsync(fileName, folderType);
+            if (goalFileName == null)
+                return BadRequest("somthing went wrong or the file not found");
             return Ok(goalFileName);
         }
 
